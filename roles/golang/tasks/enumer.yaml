@@ -1,0 +1,4 @@
+---
+- name: Install Enumer (Enum Generation Tool)
+  ansible.builtin.shell: go install github.com/dmarkham/enumer
+  changed_when: false

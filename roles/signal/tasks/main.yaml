@@ -1,0 +1,22 @@
+---
+- name: Add Signal Public Signing Key
+  ansible.builtin.include_tasks: tasks/signing_keys.yaml
+
+- name: Add Signal PPA to Aptitude (Debian)
+  ansible.builtin.include_tasks: tasks/add_debian_ppa.yaml
+  when: ansible_os_family == 'Debian'
+
+- name: Install Signal Messenger (Debian)
+  ansible.builtin.apt:
+    name: signal-desktop
+    state: present
+    update_cache: true
+  when: ansible_os_family == 'Debian'
+
+- name: Install Signal Messenger (Arch)
+  community.general.pacman:
+    name: signal-desktop
+    update_cache: true
+    upgrade: true
+    state: present
+  when: ansible_os_family == 'Archlinux'

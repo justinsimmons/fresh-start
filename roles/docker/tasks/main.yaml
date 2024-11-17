@@ -1,0 +1,40 @@
+---
+- name: Add Docker Public Signing Keys
+  ansible.builtin.import_tasks: tasks/signing_keys.yaml
+  when: ansible_os_family == 'Debian'
+
+- name: Add Docker PPA to Aptitude (Debian)
+  ansible.builtin.include_tasks: tasks/aptitude_ppa.yaml
+  when: ansible_os_family == 'Debian'
+
+# This is recommended in the install instructions:
+# https://docs.docker.com/engine/install/debian/
+- name: Remove Conflicting Containerization Tools
+  ansible.builtin.apt:
+    name:
+      - docker.io
+      - docker-doc
+      - docker-compose
+      - podman-docker
+      - containerd
+      - runc
+    state: absent
+    autoremove: true
+  when: ansible_os_family == 'Debian'
+
+- name: Install Docker Engine (Debian)
+  ansible.builtin.apt:
+    name:
+      "{{ docker_apt_packages }}"
+    state: present
+    update_cache: true
+  when: ansible_os_family == 'Debian'
+
+- name: Install Docker Engine (Arch)
+  community.general.pacman:
+    name:
+      "{{ docker_pacman_packages }}"
+    update_cache: true
+    upgrade: true
+    state: present
+  when: ansible_os_family == 'Archlinux'

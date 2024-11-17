@@ -1,0 +1,11 @@
+---
+debian_packages:
+  - vim
+  - gpg
+
+arch_packages:
+  - vim
+  - powertop
+  - vlc
+  - firefox
+  - podman

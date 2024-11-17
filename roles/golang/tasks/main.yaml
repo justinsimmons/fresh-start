@@ -1,0 +1,12 @@
+---
+- name: Install Go Compiler
+  ansible.builtin.import_tasks: tasks/compiler.yaml
+
+- name: Install Go Language Server
+  ansible.builtin.import_tasks: tasks/language_server.yaml
+
+- name: Install Go Debugger
+  ansible.builtin.import_tasks: tasks/debugger.yaml
+
+- name: Install Go Linter
+  ansible.builtin.import_tasks: tasks/linter.yaml

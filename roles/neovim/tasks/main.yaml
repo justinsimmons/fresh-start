@@ -1,0 +1,38 @@
+---
+# -----------------------------------------------------------------------------#
+- name: Install Neovim (Arch)
+  community.general.pacman:
+    name: neovim
+    state: present
+  when: ansible_os_family == 'Archlinux'
+
+- name: Install Neovim (Debian)
+  ansible.builtin.apt:
+    name: neovim
+    state: present
+  when: ansible_os_family == 'Debian'
+
+# ---Ripgrep is a required tool for fuzzy searching files----------------------#
+- name: Install ripgrep (Arch)
+  community.general.pacman:
+    name: neovim
+    state: present
+  when: ansible_os_family == 'Archlinux'
+
+- name: Install repgrep (Debian)
+  ansible.builtin.apt:
+    name: neovim
+    state: present
+  when: ansible_os_family == 'Debian'
+
+# -----------------------------------------------------------------------------#
+- name: Clone Neovim config
+  become: true
+  become_user: "{{ username }}"
+  ansible.builtin.git:
+    clone: true
+    repo: https://github.com/justinsimmons/neovim-config.git
+    dest: "/home/{{ username }}/.config/nvim"
+    version: main
+
+# -----------------------------------------------------------------------------#

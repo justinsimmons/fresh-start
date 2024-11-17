@@ -1,0 +1,27 @@
+---
+- name: Check If Public Signing Key Exists
+  ansible.builtin.stat:
+    path: /usr/share/keyrings/signal-desktop-keyring.gpg
+  register: signal_key
+
+- name: Create Temporary Install Directory
+  ansible.builtin.tempfile:
+    state: directory
+    suffix: signal_keys
+  register: temp_dir
+  when: not signal_key.stat.exists
+
+- name: Fetch Official Public Software Signing Key
+  ansible.builtin.get_url:
+    url: https://updates.signal.org/desktop/apt/keys.asc
+    dest: "{{ temp_dir.path }}/keys.asc"
+  when: not signal_key.stat.exists
+
+- name: Install Offical Public Software Signing Key
+  ansible.builtin.shell: |
+    set -eo pipefail
+    cat '{{ temp_dir.path }}/keys.asc' | gpg --dearmor > '{{ temp_dir.path }}/signal-desktop-keyring.gpg'
+    cat '{{ temp_dir.path }}/signal-desktop-keyring.gpg' | sudo tee /usr/share/keyrings/signal-desktop-keyring.gpg > /dev/null
+  args:
+    creates: /usr/share/keyrings/signal-desktop-keyring.gpg
+    executable: /bin/bash

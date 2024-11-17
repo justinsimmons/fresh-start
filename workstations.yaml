@@ -1,0 +1,59 @@
+---
+- name: Setup Workstations
+  hosts: all
+  become: true
+
+  tasks:
+    - name: Update System
+      ansible.builtin.import_tasks: roles/system/tasks/upgrade.yaml
+
+    - name: Install Common Packages
+      ansible.builtin.import_tasks: roles/system/tasks/install_packages.yaml
+
+    # - name: Harden SSH
+    #   import_tasks: roles/security/tasks/ssh.yaml
+
+    # Turn off for better security, can always be enabled later if needed.
+    # - name: Disable sshd
+    #   ansible.builtin.service:
+    #     name: sshd
+    #     state: stopped
+    #     enabled: no
+
+    - name: Configure ssh-agent
+      ansible.builtin.import_tasks: roles/ssh/tasks/ssh-agent-systemd.yaml
+
+    - name: Install Git
+      ansible.builtin.include_role:
+        name: git
+
+    - name: Install Neovim
+      ansible.builtin.include_role:
+        name: neovim
+
+    - name: Install Docker
+      ansible.builtin.include_role:
+        name: docker
+      when: ansible_os_family == 'Debian'
+
+    - name: Install Podman
+      community.general.pacman:
+        name:
+          - podman
+          - podman-docker
+        update_cache: true
+        upgrade: true
+        state: latest
+      when: ansible_os_family == 'Archlinux'
+
+    - name: Install Golang Tooling
+      ansible.builtin.include_role:
+        name: golang
+
+    - name: Install Signal Messenger
+      ansible.builtin.include_role:
+        name: signal
+
+    - name: Install Mullvad VPN Client
+      ansible.builtin.include_role:
+        name: signal

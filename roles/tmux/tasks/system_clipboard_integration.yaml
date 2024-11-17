@@ -1,0 +1,51 @@
+---
+# If we are using Xorg we need to instal xsel to copy to system clipboard.
+# https://wiki.archlinux.org/title/Tmux#Clipboard_integration
+
+- name: Determine if using Xorg
+  ansible.builtin.shell: |
+    if [[ "x11" == $(echo "$XDG_SESSION_TYPE") ]]; then
+      true; return
+    else
+      false; return
+    fi
+  register: is_xorg
+  changed_when: false
+
+- name: Install xsel (Arch)
+  community.general.pacman:
+    name: xsel
+    state: present
+  when: ansible_os_family == 'Archlinux' and is_xorg
+
+- name: Install xsel (Debian)
+  ansible.builtin.apt:
+    name: xsel
+    state: present
+  when: ansible_os_family == 'Debian' and is_xorg
+
+
+# If we are using Wayland we need to install wl-clipboard to copy to the system
+# clipboard.
+
+- name: Determine if using Wayland
+  ansible.builtin.shell: |
+    if [[ "wayland" == $(echo "$XDG_SESSION_TYPE") ]]; then
+      true; return
+    else
+      false; return
+    fi
+  register: is_wayland
+  changed_when: false
+
+- name: Install xsel (Arch)
+  community.general.pacman:
+    name: wl-clipboard
+    state: present
+  when: ansible_os_family == 'Archlinux' and is_wayland
+
+- name: Install xsel (Debian)
+  ansible.builtin.apt:
+    name: wl-clipboard
+    state: present
+  when: ansible_os_family == 'Debian' and is_wayland

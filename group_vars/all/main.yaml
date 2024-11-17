@@ -1,0 +1,5 @@
+---
+username: justin
+
+pacman_privacy_tools:
+  - mat2  # CLI photo metadata removal tool.

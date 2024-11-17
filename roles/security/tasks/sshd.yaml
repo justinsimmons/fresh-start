@@ -1,0 +1,43 @@
+---
+- name: Backup existing SSH Configuration
+  ansible.builtin.copy:
+    src: /etc/ssh/sshd_config
+    dest: /etc/ssh/sshd_config.bak
+    remote_src: "yes"
+    validate: sshd -t -f %s
+    owner: root
+    group: root
+
+- name: Harden SSH Configuration
+  ansible.builtin.lineinfile:
+    dest: /etc/ssh/sshd_config
+    regexp: "{{ item.regexp }}"
+    line: "{{ item.line }}"
+    state: present
+    validate: 'sshd -t -f %s'
+  with_items:
+    # Disable SSH Password Authentication
+    - regexp: "^#PasswordAuthentication yes"
+      line: "PasswordAuthentication no"
+    # Disable SSH root login
+    - regexp: "^PermitRootLogin"
+      line: "PermitRootLogin no"
+    # Disable SSH Empty Passwords
+    - regexp: "^PermitEmptyPasswords"
+      line: "PermitEmptyPasswords no"
+    # Disable Challenge Response Authentication (We use public key auth)
+    - regexp: "^ChallengeResponseAuthentication"
+      line: "ChallengeResponseAuthentication no"
+    # Disable Kerberos Authentication (We use public key auth)
+    - regexp: "^KerberosAuthentication"
+      line: "KerberosAuthentication no"
+    # Disable GSS API Authentication (We use public key auth)
+    - regexp: "^GSSAPIAuthentication"
+      line: "GSSAPIAuthentication no"
+    # Disable X11 Forwarding
+    - regexp: "^X11Forwarding"
+      line: "X11Forwarding no"
+    # Disable User Enviornment
+    - regexp: "^PermitUserEnvironment"
+      line: "PermitUserEnvironment no"
+  notify: Restart SSH Daemon

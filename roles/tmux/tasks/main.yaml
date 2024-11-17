@@ -1,0 +1,24 @@
+---
+# -----------------Install tmux -----------------------------------------------#
+- name: Install tmux (Arch)
+  community.general.pacman:
+    name: tmux
+    state: present
+  when: ansible_os_family == 'Archlinux'
+
+- name: Install tmux (Debian)
+  ansible.builtin.apt:
+    name: neovim
+    state: present
+  when: ansible_os_family == 'Debian'
+
+# -----------------------------------------------------------------------------#
+- name: Clone tmux config
+  become: true
+  become_user: "{{ username }}"
+  ansible.builtin.git:
+    clone: true
+    repo: https://github.com/justinsimmons/.dotfiles
+    dest: "/home/{{ username }}"
+    version: main
+# -----------------------------------------------------------------------------#

@@ -1,0 +1,42 @@
+---
+- name: Install git (Arch)
+  community.general.pacman:
+    name: git
+    state: present
+  when: ansible_os_family == 'Archlinux'
+
+- name: Install git (Debian)
+  ansible.builtin.apt:
+    name: git
+    state: present
+  when: ansible_os_family == 'Debian'
+
+# https://dev.to/ccoveille/git-the-complete-guide-to-sign-your-commits-with-an-ssh-key-35bg
+- name: Configure Git to Use SSH for Signing
+  ansible.builtin.shell: git config --global gpg.format ssh
+  args:
+    executable: /bin/bash
+
+- name: Configure Git to Use SSH for Signing
+  ansible.builtin.shell: |
+    git config --global user.signingkey /home/{{ username }}/.ssh/id_ed25519.pub
+  args:
+    executable: /bin/bash
+
+- name: Point git to allowed signers file
+  ansible.builtin.shell: |
+    git config --global gpg.ssh.allowedSignersFile /home/{{ username }}/.ssh/allowed_signers
+  args:
+    executable: /bin/bash
+
+- name: Automatically Sign Commits and Tags
+  ansible.builtin.shell: |
+    git config --global commit.gpgsign true
+    git config --global tag.gpgsign true
+  args:
+    executable: /bin/bash
+
+- name: Automatically Signoff Commits
+  ansible.builtin.shell: git config --global format.signoff true
+  args:
+    executable: /bin/bash

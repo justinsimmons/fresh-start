@@ -1,0 +1,9 @@
+---
+- name: Add Signal to Aptitude's List of Repositories
+  ansible.builtin.shell: |
+    set -eo pipefail
+    echo 'deb [arch=amd64 signed-by=/usr/share/keyrings/signal-desktop-keyring.gpg] https://updates.signal.org/desktop/apt xenial main' |\
+      sudo tee /etc/apt/sources.list.d/signal-xenial.list
+  args:
+    creates: /etc/apt/sources.list.d/signal-xenial.list
+    executable: /bin/bash

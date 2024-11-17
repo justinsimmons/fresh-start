@@ -1,0 +1,7 @@
+---
+# Automating updates for Debian systems.
+- name: Install Debian Unattended Upgrades package.
+  ansible.builtin.apt:
+    name: unattended-upgrades
+    state: present
+  when: ansible_os_family == 'Debian'

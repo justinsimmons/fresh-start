@@ -1,0 +1,15 @@
+---
+# Annoyingly there are different signing keys for Ubuntu and Debian OSs.
+# https://docs.docker.com/engine/install/debian/
+# https://docs.docker.com/engine/install/ubuntu/
+- name: Add Docker PPA to Aptitude (Debian)
+  ansible.builtin.shell: |
+    set -eo pipefail
+    echo \
+      "deb [arch=$(dpkg --print-architecture) signed-by=/usr/share/keyrings/docker_{{ ansible_distribution | lower }}.asc] https://download.docker.com/linux/{{ ansible_distribution | lower }} \
+      $(. /etc/os-release && echo "$VERSION_CODENAME") stable" | \
+      sudo tee /etc/apt/sources.list.d/docker.list > /dev/null
+  args:
+    creates: /etc/apt/sources.list.d/docker.list
+    executable: /bin/bash
+  when: ansible_distribution == 'Debian' or ansible_distribution == 'Ubuntu'

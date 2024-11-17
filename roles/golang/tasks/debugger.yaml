@@ -1,0 +1,12 @@
+---
+- name: Install Go Debugger (Arch)
+  community.general.pacman:
+    name: delve
+    state: present
+  when: ansible_os_family == 'Archlinux'
+
+- name: Install Go Debugger (Debian)
+  ansible.builtin.apt:
+    name: delve
+    state: present
+  when: ansible_os_family == 'Debian'

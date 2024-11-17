@@ -1,0 +1,12 @@
+---
+- name: Install Go Language Server (Arch)
+  community.general.pacman:
+    name: gopls
+    state: present
+  when: ansible_os_family == 'Archlinux'
+
+- name: Install Go Language Server (Debian)
+  ansible.builtin.apt:
+    name: gopls
+    state: present
+  when: ansible_os_family == 'Debian'

@@ -1,0 +1,16 @@
+---
+- name: Install Essential Packages (Debian)
+  ansible.builtin.apt:
+    name:
+      "{{ debian_packages }}"
+    state: present
+  when: ansible_os_family == 'Debian'
+
+- name: Install Essential Packages (Arch)
+  community.general.pacman:
+    name:
+      "{{ arch_packages }}"
+    update_cache: "yes"
+    upgrade: "yes"
+    state: present
+  when: ansible_os_family == 'Archlinux'

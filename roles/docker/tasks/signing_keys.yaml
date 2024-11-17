@@ -1,0 +1,13 @@
+---
+- name: Check If Public Signing Key Exists (Debian)
+  ansible.builtin.stat:
+    path: "/usr/share/keyrings/docker_{{ ansible_distribution | lower }}.asc"
+  register: docker_key
+  when: ansible_distribution == 'Debian' or ansible_distribution == 'Ubuntu'
+
+- name: Fetch Public Signing Key (Debian)
+  ansible.builtin.get_url:
+    url: "https://download.docker.com/linux/{{ ansible_distribution | lower }}/gpg"
+    dest: "/usr/share/keyrings/docker_{{ ansible_distribution | lower }}.asc"
+    mode: 644
+  when: not docker_key.stat.exists and (ansible_distribution == 'Debian' or ansible_distribution == 'Ubuntu')

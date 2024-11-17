@@ -1,0 +1,36 @@
+---
+
+- name: "Enable ssh-agent service for user"
+  become: true
+  become_user: "{{ username }}"
+  ansible.builtin.systemd_service:
+    name: ssh-agent.service  # Comes with Openssh.
+    enabled: true
+    state: started
+    scope: "user"
+#  enviornment:
+#    XDG_RUNTIME_DIR: "/run/user/{{ ansible_facts['ansible_user_uid'] }}"
+
+- name: Cache ssh passphrase until logout
+  ansible.builtin.lineinfile:
+    path: "/home/{{ username }}/.ssh/config"
+    line: AddKeysToAgent yes
+    state: present
+    create: true
+    owner: "{{ username }}"
+    group: "{{ username }}"
+    mode: "0600"
+
+- name: Add to .zshrc
+  ansible.builtin.blockinfile:
+    path: "/home/{{ username }}/.zshrc"
+    append_newline: true
+    prepend_newline: true
+    block: |
+      # Enables the shell to find the ssh-agent socket, started by systemd.
+      export SSH_AUTH_SOCK="${XDG_RUNTIME_DIR}/ssh-agent.socket"
+    state: present
+    create: true
+    owner: "{{ username }}"
+    group: "{{ username }}"
+    mode: "0644"
