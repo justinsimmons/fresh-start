@@ -1,0 +1,12 @@
+---
+- name: Check If Public Signing Key Exists
+  ansible.builtin.stat:
+    path: usr/share/keyrings/mullvad-keyring.asc
+  register: mullvad_key
+
+- name: Fetch Public Signing Key
+  ansible.builtin.get_url:
+    url: https://repository.mullvad.net/deb/mullvad-keyring.asc
+    dest: "usr/share/keyrings/mullvad-keyring.asc"
+    mode: 644
+  when: not mullvad_key.stat.exists

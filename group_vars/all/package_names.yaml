@@ -1,8 +1,8 @@
 ---
-debian_packages:
-  - vim
-  - gpg
-
+#debian_packages:
+#  - vim
+#  - gpg
+#
 arch_packages:
   - vim
   - powertop

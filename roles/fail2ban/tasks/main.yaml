@@ -1,0 +1,12 @@
+---
+- name: Install fail2ban (Debian)
+  ansible.builtin.apt:
+    name: fail2ban
+    state: present
+  when: ansible_os_family == 'Debian'
+
+- name: Ensure fail2ban is running and enabled on boot
+  ansible.builtin.service:
+    name: fail2ban
+    state: started
+    enabled: true

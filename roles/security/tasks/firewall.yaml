@@ -1,0 +1,33 @@
+---
+- name: Install UFW (Debian)
+  ansible.builtin.apt:
+    name: ufw
+    state: present
+  when: ansible_os_family == 'Debian'
+
+- name: Install UFW (Arch)
+  community.general.pacman:
+    name: ufw
+    update_cache: true
+    upgrade: true
+    state: present
+  when: ansible_os_family == 'Archlinux'
+
+- name: Enable UFW
+  community.general.ufw:
+    state: enabled
+
+- name: Deny all incoming traffic
+  community.general.ufw:
+    default: deny
+    direction: incoming
+
+- name: Allow all outgoing traffic
+  community.general.ufw:
+    default: allow
+    direction: outgoing
+
+- name: Allow SSH traffic
+  community.general.ufw:
+    rule: allow
+    name: OpenSSH

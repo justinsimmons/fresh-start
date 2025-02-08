@@ -1,0 +1,15 @@
+---
+- name: Add Mullvad VPN to Aptitude's List of Repositories
+  ansible.builtin.shell: |
+    set -eo pipefail
+    echo "deb [signed-by=/usr/share/keyrings/mullvad-keyring.asc arch=$( dpkg --print-architecture )] https://repository.mullvad.net/deb/stable $(lsb_release -cs) main" |\
+      sudo tee /etc/apt/sources.list.d/mullvad.list
+  args:
+    creates: /etc/apt/sources.list.d/mullvad.list
+    executable: /bin/bash
+
+- name: Install Mullvad VPN
+  ansible.builtin.apt:
+    name: mullvad-vpn
+    state: present
+    update_cache: true

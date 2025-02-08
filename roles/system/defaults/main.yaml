@@ -1,16 +1,16 @@
 ---
-debian_packages:
-  - powertop
-  - vlc
-  - mat2
-  - clamav
-  - firefox
-
-arch_packages:
-  - powertop
-  - vlc
-  - mat2
-  - clamav
-  - firefox
-  - veracrypt
-  - tor
+#debian_packages:
+#  - powertop
+#  - vlc
+#  - mat2
+#  - clamav
+#  - firefox
+#
+#arch_packages:
+#  - powertop
+#  - vlc
+#  - mat2
+#  - clamav
+#  - firefox
+#  - veracrypt
+#  - tor

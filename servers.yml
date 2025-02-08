@@ -1,0 +1,35 @@
+---
+- name: Setup Server
+  hosts: servers
+  become: true
+
+  handlers:
+    - name: Import generic handlers
+      ansible.builtin.import_tasks: roles/handlers/main.yaml
+
+  tasks:
+    - name: Update System
+      ansible.builtin.import_tasks: roles/system/tasks/upgrade.yaml
+
+    - name: Install Common Packages
+      ansible.builtin.import_tasks: roles/system/tasks/install_packages.yaml
+
+    - name: Install Unattended Upgrades
+      ansible.builtin.import_tasks: roles/security/tasks/unattended_upgrades.yaml
+
+    - name: Harden SSH
+      ansible.builtin.import_tasks: roles/security/tasks/sshd.yaml
+
+    - name: Install Firewall (UFW)
+      ansible.builtin.import_tasks: roles/security/tasks/firewall.yaml
+
+    - name: Install fail2ban
+      ansible.builtin.include_role:
+        name: fail2ban
+
+    - name: Install Docker
+      ansible.builtin.include_role:
+        name: docker
+
+    - name: Add bash configuration
+      ansible.builtin.import_tasks: roles/system/tasks/bash_aliases.yaml

@@ -1,0 +1,8 @@
+---
+- name: Setup Server
+  hosts: servers
+  become: true
+
+  tasks:
+    - name: Add bash configuration
+      ansible.builtin.import_tasks: roles/system/tasks/bash_aliases.yaml
